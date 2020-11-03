@@ -15,7 +15,7 @@ public class Analyser {
 	 * > | - i | > | > | - | > | - 关系： 0 : < 1 : = 2 : > -1: error
 	 */
 	static Character[] vtList = { '+', '*', '(', ')', 'i' };
-	static int[][] matrix = { { 2, 0, 0, 2, 0, 2 }, { 2, 2, 0, 2, 0, 2 }, { 0, 0, 0, 1, 0, -1 }, { 2, 2, -1, 2, -1, 2 },
+	static int[][] matrix = { { 2, 0, 0, 2, 0, 2 }, { 2, 2, 0, 2, 0, 2 }, { 0, 0, 0, 1, 0, 2 }, { 2, 2, -1, 2, -1, 2 },
 			{ 2, 2, -1, 2, -1, 2 }, { 0, 0, 0, -1, 0, 2 } };
 
 	static Stack<Character> stack = new Stack<Character>();
@@ -26,8 +26,8 @@ public class Analyser {
 
 		BufferedReader br = null;
 		try {
-			// br = new BufferedReader(new FileReader("text.in"));
-			br = new BufferedReader(new FileReader(args[0]));
+			br = new BufferedReader(new FileReader("text.in"));
+			// br = new BufferedReader(new FileReader(args[0]));
 			text = br.readLine();
 			textSize = text.length();
 			br.close();
