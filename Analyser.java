@@ -3,9 +3,9 @@ import java.util.*;
 
 public class Analyser {
 
-	static boolean noError = true;
+	static boolean isCompleted = false;
 	static boolean leftCond = false, rightCond = false;
-	static StringBuilder text = new StringBuilder();
+	static String text = "";
 	static String encoding = "UTF-8";
 	static int textIndex = 0, textSize;
 
@@ -15,19 +15,20 @@ public class Analyser {
 	 * > | - i | > | > | - | > | - 关系： 0 : < 1 : = 2 : > -1: error
 	 */
 	static Character[] vtList = { '+', '*', '(', ')', 'i' };
-	static int[][] matrix = { { 2, 0, 0, 2, 0 }, { 2, 2, 0, 2, 0 }, { 0, 0, 0, 1, 0 }, { 2, 2, -1, 2, -1 },
-			{ 2, 2, -1, 2, -1 } };
+	static int[][] matrix = { { 2, 0, 0, 2, 0, 2 }, { 2, 2, 0, 2, 0, 2 }, { 0, 0, 0, 1, 0, -1 }, { 2, 2, -1, 2, -1, 2 },
+			{ 2, 2, -1, 2, -1, 2 }, { 0, 0, 0, -1, 0, 2 } };
 
 	static Stack<Character> stack = new Stack<Character>();
 
 	public static void main(String[] args) {
 
 		// 打开文件
-		// BufferedReader br = new BufferedReader(new FileReader("text.in"));
+
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(args[0]));
-			text = new StringBuilder(br.readLine());
+			br = new BufferedReader(new FileReader("text.in"));
+			// br = new BufferedReader(new FileReader(args[0]));
+			text = br.readLine();
 			textSize = text.length();
 			br.close();
 		} catch (FileNotFoundException e) {
@@ -43,9 +44,9 @@ public class Analyser {
 		}
 
 		// 识别并输出
-		pushNext();
-		while (noError && textIndex < textSize) {
-			Character prev = stack.peek(), next = peekNext();
+		stack.push('#');
+		while (!isCompleted) {
+			Character prev = peekOp(), next = peekNext();
 			int res = compare(prev, next);
 			if (res == -1) {
 				System.out.println('E');
@@ -58,12 +59,49 @@ public class Analyser {
 		}
 	}
 
+	static Character peekOp() {
+		Character c = stack.peek();
+		if (c == 'E') {
+			Character temp = stack.pop();
+			Character res = stack.peek();
+			stack.push(temp);
+			return res;
+		}
+		return c;
+	}
+
 	static void reduce() {
 		Character c = stack.peek();
 		if (c == 'i') {
 			stack.pop();
 			stack.push('E');
+			System.out.println("R");
+		} else {
+			if (stack.size() == 2 && stack.peek() == 'E') {
+				isCompleted = true;
+				return;
+			}
+			Character s1 = stack.pop();
+			Character s2 = stack.pop();
+			Character s3 = stack.pop();
+			if (s1 == 'E' && s3 == 'E' || isOperator(s2)) {
+				stack.push('E');
+				System.out.println("R");
+			} else if (s1 == '(' && s3 == ')' && s2 == 'E') {
+				stack.push('E');
+				System.out.println("R");
+			} else {
+				isCompleted = true;
+				System.out.println("RE");
+			}
 		}
+	}
+
+	static boolean isOperator(Character c) {
+		if (c == '+' || c == '*') {
+			return true;
+		}
+		return false;
 	}
 
 	static void pushNext() {
@@ -75,11 +113,11 @@ public class Analyser {
 
 	static Character peekNext() {
 		if (textIndex >= textSize) {
-			return null;
+			return '#';
 		}
 		Character res = text.charAt((int) textIndex);
 		if (res == '\r' || res == '\n') {
-			return null;
+			return '#';
 		}
 		return res;
 	}
@@ -93,11 +131,15 @@ public class Analyser {
 	}
 
 	static int locate(Character c) {
+
 		int max = vtList.length;
 		for (int i = 0; i < max; i++) {
 			if (vtList[i] == c) {
 				return i;
 			}
+		}
+		if (c == '#') {
+			return 5;
 		}
 		return -1;
 	}
