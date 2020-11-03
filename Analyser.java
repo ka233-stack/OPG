@@ -26,8 +26,8 @@ public class Analyser {
 
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader("text.in"));
-			// br = new BufferedReader(new FileReader(args[0]));
+			// br = new BufferedReader(new FileReader("text.in"));
+			br = new BufferedReader(new FileReader(args[0]));
 			text = br.readLine();
 			textSize = text.length();
 			br.close();
