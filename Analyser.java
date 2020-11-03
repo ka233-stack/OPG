@@ -26,8 +26,8 @@ public class Analyser {
 
 		BufferedReader br = null;
 		try {
-			// br = new BufferedReader(new FileReader("text.in"));
-			br = new BufferedReader(new FileReader(args[0]));
+			br = new BufferedReader(new FileReader("text.in"));
+			// br = new BufferedReader(new FileReader(args[0]));
 			text = br.readLine();
 			textSize = text.length();
 			br.close();
@@ -71,8 +71,7 @@ public class Analyser {
 	}
 
 	static void reduce() {
-		Character c = stack.peek();
-		if (c == 'i') {
+		if (stack.peek() == 'i') {
 			stack.pop();
 			stack.push('E');
 			System.out.println("R");
@@ -81,9 +80,9 @@ public class Analyser {
 				isCompleted = true;
 				return;
 			}
-			Character s1 = stack.pop();
-			Character s2 = stack.pop();
 			Character s3 = stack.pop();
+			Character s2 = stack.pop();
+			Character s1 = stack.pop();
 			if (s1 == 'E' && s3 == 'E' || isOperator(s2)) {
 				stack.push('E');
 				System.out.println("R");
