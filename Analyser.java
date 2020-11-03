@@ -1,12 +1,41 @@
 import java.io.*;
+import java.util.*;
 
-public class Tokenizer {
+public class Analyser {
 
 	static boolean noError;
 	static String text = "";
 	static String token = "";
 	static String ch = "";
 	static long textIndex, textSize;
+
+	/*
+	 * 终结符号集 = {+, *, (, ), i}
+	 * 优先关系矩阵：
+	 *    | + | * | ( | ) | i
+	 *  —————————————————————
+	 *  + | > | < | < | > | <
+	 *  * | > | > | < | > | <
+	 *  ( | < | < | < | = | <
+	 *  ) | > | > | - | > | -
+	 *  i | > | > | - | > | -
+	 * 关系：
+	 * 0 : <
+	 * 1 : =
+	 * 2 : >
+	 * -1: error
+	 */
+	static int[][] matrix = { 
+		{ 2, 0, 0, 2, 0 }, 
+		{ 2, 2, 0, 2, 0 }, 
+		{ 0, 0, 0, 1, 0 }, 
+		{ 2, 2, -1, 2, -1 },
+		{ 2, 2, -1, 2, -1 } 
+	};
+
+	static Stack<Character> stack = new Stack<Character>();
+
+	private static
 
 	public static void main(String[] args) {
 
@@ -201,7 +230,7 @@ public class Tokenizer {
 		else if (isLpar()) // 判断当前字符是否是左括号
 			System.out.println("LParenthesis");
 		else if (isRpar()) // 判断当前字符是否是右括号
-			System.out.println("RParenthesis");
+			System.out.println("RParenthesis"); 
 		else if (isComma()) // 判断当前字符是否是逗号
 			System.out.println("Comma");
 		else if (isEnd())
